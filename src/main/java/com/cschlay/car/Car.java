@@ -10,14 +10,14 @@ import java.sql.SQLException;
  * Luokka esittää autoa.
  */
 public class Car extends Connective {
-    private Model model;
     private Brand brand;
     private Engine engine;
+    private Model model;
     private String registry;
     private int year;
 
     /**
-     * Luo uuden auton.
+     * Luo uuden auton. Ei alusta tietoja millään tavalla.
      */
     public Car() {
         super();
@@ -25,13 +25,6 @@ public class Car extends Connective {
         engine = new Engine();
         model = new Model();
     }
-
-
-    public void setBrand(String name) { brand.setName(name); }
-    public void setEngine(int id) { engine.setId(id); }
-    public void setModel(String name) { model.setName(name); }
-    public void setRegistry(String registry) { this.registry = registry; }
-    public void setYear(int year) { this.year = year; }
 
     /**
      * Tallentaa luodun auton tietokantaan.
@@ -42,24 +35,38 @@ public class Car extends Connective {
         boolean status = false;
         String sql = "INSERT INTO auto (malli, merkki, moottori, rekisterinumero, vuosimalli) VALUES (?, ?, ?, ?, ?)";
 
-        try {
-            Connection connection = connector.connect();
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        if (brand.getId() > 0 && engine.getId() > 0 && model.getId() > 0 && registry!= null && year > 1900) {
+            try {
+                Connection connection = connector.connect();
+                PreparedStatement preparedStatement = connection.prepareStatement(sql);
 
-            preparedStatement.setInt(1, model.getId());
-            preparedStatement.setInt(2, brand.getId());
-            preparedStatement.setInt(3, engine.getId());
-            preparedStatement.setString(4, registry);
-            preparedStatement.setInt(5, year);
+                preparedStatement.setInt(1, model.getId());
+                preparedStatement.setInt(2, brand.getId());
+                preparedStatement.setInt(3, engine.getId());
+                preparedStatement.setString(4, registry);
+                preparedStatement.setInt(5, year);
 
-            preparedStatement.executeUpdate();
+                preparedStatement.executeUpdate();
+                status = true;
 
-            connection.close();
-            preparedStatement.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
+                connection.close();
+                preparedStatement.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
 
         return status;
     }
+
+    public int getBrand() { return brand.getId(); }
+    public void setBrand(String name) { brand.setName(name); }
+    public int getEngine() { return engine.getId(); }
+    public void setEngine(int id) { engine.setId(id); }
+    public int getModel() { return model.getId(); }
+    public void setModel(String name) { model.setName(name); }
+    public String getRegistry() { return registry; }
+    public void setRegistry(String registry) { this.registry = registry; }
+    public int getYear() { return year; }
+    public void setYear(int year) { this.year = year; }
 }
