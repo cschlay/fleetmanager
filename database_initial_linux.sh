@@ -20,11 +20,13 @@ CREATE TABLE IF NOT EXISTS malli (
 
 CREATE TABLE IF NOT EXISTS auto (
     id SERIAL,
+    malli INTEGER,
     merkki INTEGER,
     moottori INTEGER,
     rekisterinumero VARCHAR (15) UNIQUE NOT NULL,
     vuosimalli INTEGER NOT NULL,
     PRIMARY KEY (id),
+    FOREIGN KEY (malli) REFERENCES malli(id),
     FOREIGN KEY (merkki) REFERENCES merkki(id),
     FOREIGN KEY (moottori) REFERENCES moottori(id)
 );
@@ -48,8 +50,8 @@ INSERT INTO moottori VALUES (3, 1700, 20);
 INSERT INTO malli VALUES (1, 1, 'X1');
 INSERT INTO malli VALUES (2, 2, 'Y2');
 
-INSERT INTO auto VALUES (1, 1, 2, 'TESTI-AXM-103', 1997);
-INSERT INTO auto VALUES (2, 3, 1, 'TESTI-QLW-951', 2015);
+INSERT INTO auto VALUES (1, 1, 1, 2, 'TESTI-AXM-103', 1997);
+INSERT INTO auto VALUES (2, 1, 3, 1, 'TESTI-QLW-951', 2015);
 
 INSERT INTO katsastus VALUES (1, 1, '2001-10-1');
 INSERT INTO katsastus VALUES (2, 1, '2002-12-3');

@@ -10,7 +10,7 @@ import java.sql.Statement;
 /**
  * Luokka automerkkien hallinointiin.
  */
-public class Brand extends Connective {
+public class Model extends Connective {
     private String name;
 
     /**
@@ -25,7 +25,7 @@ public class Brand extends Connective {
             Connection connection = connector.connect();
             Statement query = connection.createStatement();
             ResultSet result = query.executeQuery(
-                    String.format("SELECT id FROM merkki WHERE nimi = '%s'", this.name)
+                    String.format("SELECT id FROM malli WHERE nimi = '%s'", this.name)
             );
 
             if (result.next())
@@ -35,7 +35,7 @@ public class Brand extends Connective {
             connection.close();
             query.close();
         } catch (SQLException e) {
-            System.out.println(String.format("VIRHE: Automerkkiä %s ei ole olemassa.", this.name));
+            System.out.println(String.format("VIRHE: Mallia %s ei ole olemassa.", this.name));
         }
 
         return id;
