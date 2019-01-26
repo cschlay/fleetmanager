@@ -7,11 +7,11 @@
 echo "Yhdistetään tietokantaan nimellä cschlay ja lisätään dataa."
 psql cschlay <<EOF
 
-CREATE TABLE IF NOT EXISTS merkki (id INTEGER PRIMARY KEY, nimi VARCHAR (50) UNIQUE NOT NULL);
-CREATE TABLE IF NOT EXISTS moottori (id INTEGER PRIMARY KEY, koko INTEGER, teho INTEGER);
+CREATE TABLE IF NOT EXISTS merkki (id SERIAL PRIMARY KEY, nimi VARCHAR (50) UNIQUE NOT NULL);
+CREATE TABLE IF NOT EXISTS moottori (id SERIAL PRIMARY KEY, koko INTEGER, teho INTEGER);
 
 CREATE TABLE IF NOT EXISTS malli (
-    id INTEGER,
+    id SERIAL,
     merkki INTEGER NOT NULL,
     nimi VARCHAR (50) NOT NULL,
     PRIMARY KEY (id),
@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS malli (
 );
 
 CREATE TABLE IF NOT EXISTS auto (
-    id INTEGER,
+    id SERIAL,
     merkki INTEGER,
     moottori INTEGER,
     rekisterinumero VARCHAR (15) UNIQUE NOT NULL,
@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS auto (
 );
 
 CREATE TABLE IF NOT EXISTS katsastus (
-    id INTEGER,
+    id SERIAL,
     auto INTEGER NOT NULL,
     pvm DATE NOT NULL,
     PRIMARY KEY (id),
