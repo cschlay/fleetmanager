@@ -59,6 +59,41 @@ public class Car extends Connective {
         return status;
     }
 
+    /**
+     * Muokkaa auton tietoja rekisterinumeron perusteella.
+     * Virheelliset rekisterinumeroita ei käsitellä.
+     * Oletetaan, että käyttäjällä on muita menetelmiä löytää virheellisesti syötetty rekisteri esimerkiksi käyttäjän
+     * perusteella.
+     *
+     * @return totuusarvo onnistuiko muokkaus.
+     */
+    public boolean modify() {
+        boolean status = false;
+        String sql = "UPDATE car SET malli = ?, merkki = ?, moottori = ?, vuosimalli = ? WHERE rekisterinumero = ?";
+
+        try {
+            Connection connection = connector.connect();
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+
+            preparedStatement.setInt(1, model.getId());
+            preparedStatement.setInt(2, brand.getId());
+            preparedStatement.setInt(3, engine.getId());
+            preparedStatement.setInt(4, year);
+            preparedStatement.setString(5, registry);
+
+            preparedStatement.executeUpdate();
+            status = true;
+
+            preparedStatement.close();
+            connection.close();
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return status;
+    }
+
     public int getBrand() { return brand.getId(); }
     public void setBrand(String name) { brand.setName(name); }
     public int getEngine() { return engine.getId(); }
