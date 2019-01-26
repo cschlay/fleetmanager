@@ -29,11 +29,29 @@ CREATE TABLE IF NOT EXISTS auto (
     FOREIGN KEY (moottori) REFERENCES moottori(id)
 );
 
-CREATE TABLE IF NOT EXISTS katsastukset (
+CREATE TABLE IF NOT EXISTS katsastus (
     id INTEGER,
     auto INTEGER NOT NULL,
     pvm DATE NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (auto) REFERENCES auto(id)
 );
+
+INSERT INTO merkki VALUES (1, 'Clay');
+INSERT INTO merkki VALUES (2, 'Alcy');
+INSERT INTO merkki VALUES (3, 'Yalc');
+
+INSERT INTO moottori VALUES (1, 1500, 13);
+INSERT INTO moottori VALUES (2, 1800, 15);
+INSERT INTO moottori VALUES (3, 1700, 20);
+
+INSERT INTO malli VALUES (1, 1, 'X1');
+INSERT INTO malli VALUES (2, 2, 'Y2');
+
+INSERT INTO auto VALUES (1, 1, 2, 'TESTI-AXM-103', 1997);
+INSERT INTO auto VALUES (2, 3, 1, 'TESTI-QLW-951', 2015);
+
+INSERT INTO katsastus VALUES (1, 1, '2001-10-1');
+INSERT INTO katsastus VALUES (2, 1, '2002-12-3');
+INSERT INTO katsastus VALUES (3, 2, '2019-01-10');
 EOF
