@@ -8,6 +8,5 @@ Fleet Manager Spring Boot
 4. Suorita annettu skripti `database_intial_linux.sh`.
 Tämä luo tarvittavat taulut ja alustaa testidatalla.
 
-
 ## Tietokannasta
 Moottorin teho ilmaistaan yksikössä **kW** ja koko yksikössä **cm^3**.
