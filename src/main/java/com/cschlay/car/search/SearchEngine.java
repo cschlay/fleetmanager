@@ -12,9 +12,12 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Vector;
 
+/**
+ * Pieni hakukone, joka on optimoitu autojen hakemiseen.
+ */
 public class SearchEngine extends Connective {
-
-    // Rajausehdot. Oletetaan, että kaikkia käytetään.
+    // Rajausehtoja.
+    // Kaikkia ei pidä alustaa, sillä hakutoiminnon kyselyt hyödyntävät oletusarvoja.
     private int minYear;
     private int maxYear;
     private Brand brand;
@@ -29,8 +32,8 @@ public class SearchEngine extends Connective {
      * Hakee auton rekisterinumeron perusteella.
      *
      * @param registry haettavan auton rekisterinumero
-     * @return Car -olio
-     * @throws CarNotFoundException Jos autoa löydy tietokannasta.
+     * @return Car -olio alustettuna tietokansta haetuilla arvoilla
+     * @throws CarNotFoundException jos autoa löydy tietokannasta.
      */
     public Car searchCar(String registry) throws CarNotFoundException {
         String sql = "SELECT malli.nimi AS malli, merkki.nimi AS merkki, rekisterinumero, vuosimalli " +
@@ -98,8 +101,6 @@ public class SearchEngine extends Connective {
 
         if (hasModel)
             sql += "AND malli = ?";
-
-        System.out.println(sql);
 
         try {
             Connection connection = connector.connect();

@@ -1,21 +1,38 @@
 # fleetmanager
-Fleet Manager Spring Boot
+Fleet Manager -toteutukseni Etteplan MORE:n backend -ennakkotehtävänä.
 
-## Asennus (Linux)
-1. Asenna PostgreSQL.
-2. Luo tietokanta nimellä *cschlay* ja käyttäjä samalla nimellä.
-3. Aseta salasanaksi *koodikas*.
-4. Suorita annettu skripti `database_intial_linux.sh`.
-Tämä luo tarvittavat taulut ja alustaa testidatalla.
+## Asennus (Linux/Ubuntu 18.10)
+1. Asenna PostgreSQL [ohjeet täällä](https://www.postgresql.org/download/).
+2. Luo tietokanta ja käyttäjä nimellä *cschlay* ja aseta salasanaksi *koodikas*.
+   ```
+   cl@lab$ sudo -i -u postgres
+   postgres@lab$ createuser --interactive
+   postgres@lab$ createdb cschlay
+   postgres@lab$ psql postgres
+   postgres=> ALTER USER cschlay WITH PASSWORD 'koodikas';
+   postgres=> \q
+   # CTRL + D uloskirjaukseen.
+   ```
+3. Kloonaa projekti.
+   ```
+   $ git clone https://github.com/cschlay/fleetmanager.git
+   ```
+4. Suorita asennuskripti hakemistossa *fleetmanager*.
+   Tämä luo tarvittavat taulut ja alustaa testidatalla.
+
+   ```
+   fleetmanager/$ source database_intial_linux.sh
+   ```
+5. Suorita ohjelma hakemistossa fleetmanager ja aja komento tai vaihtoehtoisesti jollakin IDE:llä.
+   ```
+   fleetmanager/$ mvn spring-boot:run
+   ```
+6. Kokeile esimerkiksi hakemiston *src/test/APITest.sh* testi skriptiä
+   ```
+   fleetmanager/test/$ source APITest.sh
+   ``` 
+7. Hakemistossa *docs* löytyy tarkemmat ohjeet API:n kutsuille.
 
 ## Tietokannasta
-Moottorin teho ilmaistaan yksikössä **kW** ja koko yksikössä **cm^3**.
-
-## Testaaminen
-REST -apin testaamisessa on käytetty cURL:ia.
-
-Esimerkkejä testeistä, tieto on peräisin [tästä artikkelista](https://www.baeldung.com/curl-rest).
-```
-# Testataan autolistausta
-curl -H 'Content-Type: application/json' -d '{"minYear:1900", "maxYear":2019, "brand":"Clay", "model":"X1"}' localhost:8080/fleet/car/listing
-```
+Moottorin teho ilmaistaan yksikössä kiloWatti (**kW**) ja koko yksikössä **cm^3**.
+Heikolla autotietoudella oletin, että moottorin koko on englanniksi "displacement".

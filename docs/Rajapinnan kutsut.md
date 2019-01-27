@@ -42,7 +42,7 @@ curl localhost:8080/fleet/car/search?registry=TESTI-AUTO
 
 ## Autolistaus
 Autolistauksen haku toimii siten, että argumenttina annetaan json, joka sisältää jonkin rajoituksista.
-
+Yksi rajoite riittää, vuosiluvuissa käytetään tarpeeksi suuria oletusarvoja.
 ```
 curl -H 'Content-Type: Application/Json' -d '{"minYear": 1900, "maxYear": 2019, "model": "X1"}' localhost:8080/fleet/car/listing
 ```
