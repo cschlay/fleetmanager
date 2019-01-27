@@ -30,32 +30,6 @@ public class Car extends Connective {
     }
 
     /**
-     * Hakee auton tietokannasta ja alustaa olion tiedot niillä tiedoilla.
-     * Mikäli autoa ei löydy, arvot jää alustamatta.
-     * Tilanne on silloin identtinen rakentajan Car() kanssa.
-
-     * @param registry auton rekisterinumero
-     */
-    public Car(String registry) {
-        super();
-        brand = new Brand();
-        engine = new Engine();
-        model = new Model();
-        this.registry = registry;
-
-        try {
-            SearchEngine search = new SearchEngine();
-            Car car = search.searchCar(registry);
-            brand.setName(car.getBrandName());
-            model.setName(car.getModelName());
-            year = car.getYear();
-        }
-        catch (CarNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
      * Tallentaa luodun auton tietokantaan.
      *
      * @return totuusarvo, onko lisäys onnistunut.
@@ -148,30 +122,42 @@ public class Car extends Connective {
      *
      * @return totuusarvo onnistuiko muokkaus.
      */
-    public boolean modify() {
-        boolean status = false;
-        String sql = "UPDATE car SET malli = ?, merkki = ?, vuosimalli = ? WHERE rekisterinumero = ?";
+    public CarResponse modify() {
+        CarResponse response = new CarResponse();
 
         try {
             Connection connection = connector.connect();
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
 
+            // Muutetaan auton tietoja.
+            String sql = "UPDATE auto SET malli = ?, merkki = ?, vuosimalli = ? WHERE rekisterinumero = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, model.getId());
             preparedStatement.setInt(2, brand.getId());
             preparedStatement.setInt(3, year);
             preparedStatement.setString(4, registry);
-
             preparedStatement.executeUpdate();
-            status = true;
-
             preparedStatement.close();
+
+            // Muutetaan moottorin tietoja.
+            sql = "UPDATE moottori SET koko = ?, teho = ? WHERE auto = ?";
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, engine.getDisplacement());
+            preparedStatement.setInt(2, engine.getPower());
+            preparedStatement.setInt(3, getId());
+            preparedStatement.executeUpdate();
+            preparedStatement.close();
+
             connection.close();
+            response.setMessage(String.format("Auton %s tietoja muokattiin.", registry));
+            response.setSuccess(true);
         }
         catch (SQLException e) {
+            response.setMessage(String.format("Auton %s tietoja ei voitu muokata.", registry));
+            response.setSuccess(false);
             e.printStackTrace();
         }
 
-        return status;
+        return response;
     }
 
     public int getBrand() {

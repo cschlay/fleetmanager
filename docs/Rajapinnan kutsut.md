@@ -14,3 +14,11 @@ Niiden täytyy siis olla jo tietokannassa ennen kuin niitä käytetään.
 curl -H 'Content-Type: Application/Json' -d '{"registry": "TESTI-AUTO", "brand": "Clay", "model": "X1", "year": 2019, "power": 30, "displacement": 1800}' localhost:8080/fleet/car/add
 ```
 
+## Auton tietojen muokkaaminen
+Muokattavan auton tiedot annetaan json -muodossa.
+Ainoastaan rekisterinumero on pakollinen ja jokin muokattava ominaisuus.
+
+**Esimerkki**
+```
+curl -X PUT -H 'Content-Type: Application/Json' -d '{"registry": "TESTI-AUTO", "vuosimalli": 1980}' localhost:8080/fleet/car/modify
+```

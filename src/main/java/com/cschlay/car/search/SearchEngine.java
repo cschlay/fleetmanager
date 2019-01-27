@@ -33,7 +33,7 @@ public class SearchEngine extends Connective {
      * @throws CarNotFoundException Jos autoa löydy tietokannasta.
      */
     public Car searchCar(String registry) throws CarNotFoundException {
-        String sql = "SELECT malli.nimi AS malli, merkki.nimi AS merkki, moottori, rekisterinumero, vuosimalli " +
+        String sql = "SELECT malli.nimi AS malli, merkki.nimi AS merkki, rekisterinumero, vuosimalli " +
                      "FROM auto LEFT OUTER JOIN merkki " +
                         "ON auto.merkki = merkki.id " +
                      "LEFT OUTER JOIN malli " +
@@ -58,6 +58,8 @@ public class SearchEngine extends Connective {
                 result.close();
                 preparedStatement.close();
                 connection.close();
+
+                getEngineInfo(car);
                 return car;
             }
             else {
@@ -113,6 +115,32 @@ public class SearchEngine extends Connective {
         }
 
         return list;
+    }
+
+    /**
+     * Hakee moottorin tiedot Car -oliolle.
+     * @param car auto oliona
+     */
+    private void getEngineInfo(Car car) {
+        String sql = "SELECT koko, teho FROM moottori WHERE auto = ?";
+
+        try {
+            Connection connection = connector.connect();
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, car.getId());
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                car.setDisplacement(resultSet.getInt("koko"));
+                car.setPower(resultSet.getInt("teho"));
+            }
+
+            preparedStatement.close();
+            connection.close();
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public int getMinYear() {

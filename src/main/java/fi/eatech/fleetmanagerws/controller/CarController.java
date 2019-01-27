@@ -2,11 +2,13 @@ package fi.eatech.fleetmanagerws.controller;
 
 import com.cschlay.car.Car;
 import com.cschlay.car.CarResponse;
+import com.cschlay.car.search.CarNotFoundException;
 import com.cschlay.car.search.SearchEngine;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.SQLException;
 import java.util.List;
 
 @RequestMapping("/fleet/car")
@@ -33,7 +35,9 @@ public class CarController {
     }
 
     /**
-     * Muokkaa auton tietoja annetun jsonin mukaan.
+     * Muokkaa auton tietoja.
+     * Kaikkia paitsi katsastuspäivämäärää.
+     *
      * Ainoastaan vaadittu argumentti on rekisterinumero ja sen lisäksi muutettava tieto.
      *
      * Esimerkiksi: {"registry": "TESTI-QLW-951", "year": 2019}
@@ -43,15 +47,40 @@ public class CarController {
      */
     @PutMapping("/modify")
     public ResponseEntity<String> modifyCar(@RequestBody Car car) {
-        String message;
+        try {
+            Car modifiableCar = (new SearchEngine()).searchCar(car.getRegistry());
 
-        if (car.modify()) {
-            message = String.format("Muokattiin auton %s tietoja.\n", car.getRegistry());
-            return new ResponseEntity<>(message, HttpStatus.CREATED);
+            // Muutetaan auton tietoja.
+            String b = car.getBrandName();
+            if (b != null)
+                modifiableCar.setBrand(b);
+
+            String m = car.getModelName();
+            if (m != null)
+                modifiableCar.setModel(m);
+
+            int d = car.getDisplacement();
+            if (d != 0)
+                modifiableCar.setDisplacement(d);
+
+            int p = car.getPower();
+            if (p != 0)
+                modifiableCar.setPower(p);
+
+            int y = car.getYear();
+            if (y != 0)
+                modifiableCar.setYear(y);
+
+            CarResponse response = modifiableCar.modify();
+
+            if (response.getSuccess())
+                return response.getResponse(HttpStatus.CREATED);
+            else
+                return response.getResponse(HttpStatus.BAD_REQUEST);
         }
-        else {
-            message = String.format("Auton %s tietoja ei voitu muokata.\n", car.getRegistry());
-            return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+        catch (CarNotFoundException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>("Autoa ei löydetty tietokannasta.",HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -93,8 +122,11 @@ public class CarController {
      */
     @GetMapping("/search")
     public @ResponseBody Car findCar(@RequestParam String registry) {
-        return new Car(registry);
+        try {
+            return (new SearchEngine().searchCar(registry));
+        }
+        catch (CarNotFoundException e) {
+            return null;
+        }
     }
-
-
 }
