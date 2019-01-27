@@ -1,6 +1,7 @@
 package fi.eatech.fleetmanagerws.controller;
 
 import com.cschlay.car.Car;
+import com.cschlay.car.CarResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -53,5 +54,22 @@ public class CarController {
             message = String.format("Auton %s tietoja ei voitu muokata.\n", car.getRegistry());
             return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
         }
+    }
+
+    /**
+     * Poistaa auton rekisterinumeron perusteella.
+     *
+     * @param registry auton rekisterinumero
+     * @return ilmoitus, onnistuiko auton poistaminen
+     */
+    @DeleteMapping("/delete/{registry}")
+    public ResponseEntity<String> deleteCar(@RequestParam String registry) {
+        Car car = new Car(registry);
+        CarResponse response = car.delete();
+
+        if (response.getSuccess())
+            return response.getResponse(HttpStatus.CREATED);
+        else
+            return response.getResponse(HttpStatus.BAD_REQUEST);
     }
 }

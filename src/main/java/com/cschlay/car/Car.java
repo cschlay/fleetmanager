@@ -4,6 +4,7 @@ import com.cschlay.database.Connective;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
@@ -24,6 +25,51 @@ public class Car extends Connective {
         brand = new Brand();
         engine = new Engine();
         model = new Model();
+    }
+
+    /**
+     * Hakee auton tietokannasta ja alustaa olion tiedot niillä tiedoilla.
+
+     * @param registry auton rekisterinumero
+     */
+    public Car(String registry) {
+
+    }
+
+    /**
+     * Poistaa auton tietokannasta.
+     * Rekisterinumeron tulee olla asetettu ennen tämän funktion kutsua.
+     *
+     * @return CarResponse -olio, joka sisältää tiedon onnistumisesta
+     */
+    public CarResponse delete() {
+        CarResponse response = new CarResponse();
+
+        String sql = "DELETE FROM auto WHERE rekisterinumero = ?";
+
+        try {
+            if (registry != null) {
+                Connection connection = connector.connect();
+
+                PreparedStatement preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setString(1, registry);
+                preparedStatement.executeUpdate();
+
+                preparedStatement.close();
+                connection.close();
+
+                response.setMessage(String.format("Auto %s poistettiin tietokannasta.", registry));
+                response.setSuccess(true);
+            }
+            else
+                throw new SQLException();
+        }
+        catch (SQLException e) {
+            response.setMessage(String.format("Autoa %s ei voitu poistaa.", registry));
+            response.setSuccess(false);
+        }
+
+        return response;
     }
 
     /**
