@@ -62,9 +62,10 @@ public class CarController {
      * @param registry auton rekisterinumero
      * @return ilmoitus, onnistuiko auton poistaminen
      */
-    @DeleteMapping("/delete/{registry}")
+    @DeleteMapping("/delete")
     public ResponseEntity<String> deleteCar(@RequestParam String registry) {
-        Car car = new Car(registry);
+        Car car = new Car();
+        car.setRegistry(registry);
         CarResponse response = car.delete();
 
         if (response.getSuccess())

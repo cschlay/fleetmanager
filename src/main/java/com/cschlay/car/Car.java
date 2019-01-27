@@ -1,5 +1,7 @@
 package com.cschlay.car;
 
+import com.cschlay.car.search.CarNotFoundException;
+import com.cschlay.car.search.SearchEngine;
 import com.cschlay.database.Connective;
 
 import java.sql.Connection;
@@ -29,11 +31,29 @@ public class Car extends Connective {
 
     /**
      * Hakee auton tietokannasta ja alustaa olion tiedot niillä tiedoilla.
+     * Mikäli autoa ei löydy, arvot jää alustamatta.
+     * Tilanne on silloin identtinen rakentajan Car() kanssa.
 
      * @param registry auton rekisterinumero
      */
     public Car(String registry) {
+        super();
+        brand = new Brand();
+        engine = new Engine();
+        model = new Model();
+        this.registry = registry;
 
+        try {
+            SearchEngine search = new SearchEngine();
+            Car car = search.searchCar(registry);
+            brand.setName(car.getBrandName());
+            engine.setId(car.getEngine());
+            model.setName(car.getModelName());
+            year = car.getYear();
+        }
+        catch (CarNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -53,18 +73,22 @@ public class Car extends Connective {
 
                 PreparedStatement preparedStatement = connection.prepareStatement(sql);
                 preparedStatement.setString(1, registry);
-                preparedStatement.executeUpdate();
+                int success = preparedStatement.executeUpdate();
 
                 preparedStatement.close();
                 connection.close();
 
-                response.setMessage(String.format("Auto %s poistettiin tietokannasta.", registry));
-                response.setSuccess(true);
+                if (success == 0)
+                    throw new CarNotFoundException();
+                else {
+                    response.setMessage(String.format("Auto %s poistettiin tietokannasta.", registry));
+                    response.setSuccess(true);
+                }
             }
             else
                 throw new SQLException();
         }
-        catch (SQLException e) {
+        catch (SQLException | CarNotFoundException e) {
             response.setMessage(String.format("Autoa %s ei voitu poistaa.", registry));
             response.setSuccess(false);
         }
@@ -142,10 +166,12 @@ public class Car extends Connective {
 
     public int getBrand() { return brand.getId(); }
     public void setBrand(String name) { brand.setName(name); }
+    public String getBrandName() { return brand.getName(); }
     public int getEngine() { return engine.getId(); }
     public void setEngine(int id) { engine.setId(id); }
     public int getModel() { return model.getId(); }
     public void setModel(String name) { model.setName(name); }
+    public String getModelName() { return model.getName(); }
     public String getRegistry() { return registry; }
     public void setRegistry(String registry) { this.registry = registry; }
     public int getYear() { return year; }

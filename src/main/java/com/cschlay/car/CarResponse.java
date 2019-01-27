@@ -9,7 +9,7 @@ public class CarResponse {
 
 
     public ResponseEntity<String> getResponse(HttpStatus statusCode) {
-        return new ResponseEntity<>(message, statusCode);
+        return new ResponseEntity<>(message + '\n', statusCode);
     }
 
     public String getMessage() {
