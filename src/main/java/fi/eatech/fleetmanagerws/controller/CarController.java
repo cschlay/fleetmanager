@@ -73,4 +73,15 @@ public class CarController {
         else
             return response.getResponse(HttpStatus.BAD_REQUEST);
     }
+
+    /**
+     * Hakee yksittäisen auton tietoja rekisterinumeron perusteella.
+     *
+     * @param registry auton rekisterinumero
+     * @return auton tiedot json -objektina.
+     */
+    @GetMapping("/search")
+    public @ResponseBody Car findCar(@RequestParam String registry) {
+        return new Car(registry);
+    }
 }
