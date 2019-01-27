@@ -1,7 +1,6 @@
 package com.cschlay.car;
 
 import com.cschlay.car.search.CarNotFoundException;
-import com.cschlay.car.search.SearchEngine;
 import com.cschlay.database.Connective;
 
 import java.sql.Connection;
@@ -10,9 +9,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * Luokka esittää autoa.
+ * Luokka esittää autoa, sisältää tiedot autosta.
  */
-public class Car extends Connective {
+public class Car extends Connective implements Identifiable {
     private Brand brand;
     private Engine engine;
     private Model model;
@@ -65,8 +64,8 @@ public class Car extends Connective {
 
             response.setMessage(String.format("Auto %s lisättiin tietokantaan.", registry));
             response.setSuccess(true);
-        } catch (SQLException e) {
-            e.printStackTrace();
+        }
+        catch (SQLException e) {
             response.setMessage(String.format("Autoa %s ei voitu lisätä.", registry));
             response.setSuccess(false);
         }
@@ -82,7 +81,6 @@ public class Car extends Connective {
      */
     public CarResponse delete() {
         CarResponse response = new CarResponse();
-
         String sql = "DELETE FROM auto WHERE rekisterinumero = ?";
 
         try {
@@ -91,12 +89,13 @@ public class Car extends Connective {
 
                 PreparedStatement preparedStatement = connection.prepareStatement(sql);
                 preparedStatement.setString(1, registry);
-                int success = preparedStatement.executeUpdate();
+
+                int deleted = preparedStatement.executeUpdate();
 
                 preparedStatement.close();
                 connection.close();
 
-                if (success == 0)
+                if (deleted == 0)
                     throw new CarNotFoundException();
                 else {
                     response.setMessage(String.format("Auto %s poistettiin tietokannasta.", registry));
@@ -104,7 +103,7 @@ public class Car extends Connective {
                 }
             }
             else
-                throw new SQLException();
+                throw new CarNotFoundException();
         }
         catch (SQLException | CarNotFoundException e) {
             response.setMessage(String.format("Autoa %s ei voitu poistaa.", registry));
@@ -154,7 +153,6 @@ public class Car extends Connective {
         catch (SQLException e) {
             response.setMessage(String.format("Auton %s tietoja ei voitu muokata.", registry));
             response.setSuccess(false);
-            e.printStackTrace();
         }
 
         return response;
@@ -203,7 +201,7 @@ public class Car extends Connective {
             connection.close();
         }
         catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println(String.format("Rekisterinumerolla %s ei löydy merkintää.", registry));
         }
 
         return id;

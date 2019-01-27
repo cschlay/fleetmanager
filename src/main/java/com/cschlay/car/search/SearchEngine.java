@@ -29,63 +29,14 @@ public class SearchEngine extends Connective {
     }
 
     /**
-     * Hakee auton rekisterinumeron perusteella.
-     *
-     * @param registry haettavan auton rekisterinumero
-     * @return Car -olio alustettuna tietokansta haetuilla arvoilla
-     * @throws CarNotFoundException jos autoa löydy tietokannasta.
-     */
-    public Car searchCar(String registry) throws CarNotFoundException {
-        String sql = "SELECT malli.nimi AS malli, merkki.nimi AS merkki, rekisterinumero, vuosimalli " +
-                     "FROM auto LEFT OUTER JOIN merkki " +
-                        "ON auto.merkki = merkki.id " +
-                     "LEFT OUTER JOIN malli " +
-                        "ON auto.malli = malli.id " +
-                     "WHERE rekisterinumero = ?";
-
-        try {
-            Connection connection = connector.connect();
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
-
-            preparedStatement.setString(1, registry);
-
-            Car car = new Car();
-            ResultSet result = preparedStatement.executeQuery();
-
-            if (result.next()) {
-                car.setBrand(result.getString("merkki"));
-                car.setModel(result.getString("malli"));
-                car.setYear(result.getInt("vuosimalli"));
-                car.setRegistry(registry);
-
-                result.close();
-                preparedStatement.close();
-                connection.close();
-
-                getEngineInfo(car);
-                return car;
-            }
-            else {
-                result.close();
-                preparedStatement.close();
-                connection.close();
-                throw new SQLException();
-            }
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
-            throw new CarNotFoundException();
-        }
-    }
-
-    /**
      * Hakee rajausten perusteella tietokannasta autoja.
+     * Muodostaa näistä listan ja palauttaa sen.
      *
      * @return lista autoista
      */
     public List<Car> carListing() {
-        List<Car> list = new Vector<>();
         String sql = "SELECT rekisterinumero FROM auto WHERE ";
+        List<Car> list = new Vector<>();
 
         boolean hasMinYear = minYear != 0;
         boolean hasMaxYear = maxYear != 0;
@@ -128,7 +79,7 @@ public class SearchEngine extends Connective {
                     list.add(searchCar(registry));
                 }
                 catch (CarNotFoundException e) {
-                    e.printStackTrace();
+                    System.out.println("Yksittäistä autoa ei voitu hakea.");
                 }
             }
 
@@ -136,13 +87,70 @@ public class SearchEngine extends Connective {
             preparedStatement.close();
             connection.close();
         }
-        catch (SQLException e) { e.printStackTrace(); }
+        catch (SQLException e) {
+            System.out.println("Autojen haku ei suju.");
+        }
 
         return list;
     }
 
     /**
+     * Hakee auton rekisterinumeron perusteella.
+     *
+     * @param registry haettavan auton rekisterinumero
+     * @return Car -olio alustettuna tietokansta haetuilla arvoilla
+     * @throws CarNotFoundException jos autoa löydy tietokannasta.
+     */
+    public Car searchCar(String registry) throws CarNotFoundException {
+        String sql = "SELECT malli.nimi AS malli, merkki.nimi AS merkki, rekisterinumero, vuosimalli " +
+                "FROM auto LEFT OUTER JOIN merkki " +
+                "ON auto.merkki = merkki.id " +
+                "LEFT OUTER JOIN malli " +
+                "ON auto.malli = malli.id " +
+                "WHERE rekisterinumero = ?";
+
+        try {
+            Car car = new Car();
+
+            Connection connection = connector.connect();
+
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, registry);
+
+            ResultSet result = preparedStatement.executeQuery();
+
+            if (result.next()) {
+                // Asetetaan auto -oliolle tietoja.
+                car.setBrand(result.getString("merkki"));
+                car.setModel(result.getString("malli"));
+                car.setYear(result.getInt("vuosimalli"));
+                car.setRegistry(registry);
+
+                result.close();
+                preparedStatement.close();
+                connection.close();
+
+                // Haetaan moottorin tiedot.
+                getEngineInfo(car);
+
+                return car;
+            }
+            // Heitetään virhe, jos autoa ei löydy.
+            else {
+                result.close();
+                preparedStatement.close();
+                connection.close();
+                throw new SQLException();
+            }
+        }
+        catch (SQLException e) {
+            throw new CarNotFoundException();
+        }
+    }
+
+    /**
      * Hakee moottorin tiedot Car -oliolle.
+     *
      * @param car auto oliona
      */
     private void getEngineInfo(Car car) {
@@ -150,20 +158,23 @@ public class SearchEngine extends Connective {
 
         try {
             Connection connection = connector.connect();
+
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, car.getId());
 
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                car.setDisplacement(resultSet.getInt("koko"));
-                car.setPower(resultSet.getInt("teho"));
+            ResultSet result = preparedStatement.executeQuery();
+
+            if (result.next()) {
+                car.setDisplacement(result.getInt("koko"));
+                car.setPower(result.getInt("teho"));
             }
 
+            result.close();
             preparedStatement.close();
             connection.close();
         }
         catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println("Moottorin tiedoissa on vikaa.");
         }
     }
 

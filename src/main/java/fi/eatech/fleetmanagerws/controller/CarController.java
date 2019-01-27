@@ -78,7 +78,6 @@ public class CarController {
                 return response.getResponse(HttpStatus.BAD_REQUEST);
         }
         catch (CarNotFoundException e) {
-            e.printStackTrace();
             return new ResponseEntity<>("Autoa ei löydetty tietokannasta.", HttpStatus.BAD_REQUEST);
         }
     }
@@ -120,12 +119,12 @@ public class CarController {
      * @return auton tiedot json -objektina.
      */
     @GetMapping("/search")
-    public @ResponseBody Car findCar(@RequestParam String registry) {
+    public @ResponseBody Object findCar(@RequestParam String registry) {
         try {
             return (new SearchEngine().searchCar(registry));
         }
         catch (CarNotFoundException e) {
-            return null;
+            return new ResponseEntity<>(String.format("Autoa %s ei löydy.", registry), HttpStatus.BAD_REQUEST);
         }
     }
 }

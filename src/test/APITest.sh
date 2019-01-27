@@ -30,6 +30,10 @@ echo "Haetaan auton AUTO-1 tietoja"
 curl localhost:8080/fleet/car/search?registry=AUTO-1
 echo ""
 echo ""
+echo "Seuraavaa autoa ei löydy."
+curl localhost:8080/fleet/car/search?registry=EI-OLE
+echo ""
+echo ""
 
 echo "== AUTON MUOKKAUS == "
 echo "Muokataan auton AUTO-1 tietoja siten, että vaihdetaan auton merkki."
@@ -37,6 +41,10 @@ curl -X PUT -H 'Content-Type: Application/Json' -d '{"registry": "AUTO-1", "bran
 echo ""
 echo "Tarkistetaan onko auton tieto muuttunut."
 curl localhost:8080/fleet/car/search?registry=AUTO-1
+echo ""
+echo ""
+echo "Seuraavaa autoa ei voi muokata."
+curl -X PUT -H 'Content-Type: Application/Json' -d '{"registry": "AUTO-EI", "brand": "Alcy"}' localhost:8080/fleet/car/modify
 echo ""
 echo ""
 

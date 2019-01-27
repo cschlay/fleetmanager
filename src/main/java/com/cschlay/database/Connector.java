@@ -46,8 +46,6 @@ public class Connector {
             return DriverManager.getConnection(DATABASE, USERNAME, PASSWORD);
         }
         catch (SQLException e) {
-            e.printStackTrace();
-
             return null;
         }
     }

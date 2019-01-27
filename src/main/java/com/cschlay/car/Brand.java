@@ -2,15 +2,12 @@ package com.cschlay.car;
 
 import com.cschlay.database.Connective;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 /**
  * Luokka automerkkien hallinointiin.
  */
-public class Brand extends Connective {
+public class Brand extends Connective implements Identifiable {
     private String name;
 
     /**
@@ -19,29 +16,35 @@ public class Brand extends Connective {
      * @return automerkin id -tunnus
      */
     public int getId() {
+        String sql = "SELECT id FROM merkki WHERE nimi = ?";
         int id = -1;
 
         try {
             Connection connection = connector.connect();
-            Statement query = connection.createStatement();
-            ResultSet result = query.executeQuery(
-                    String.format("SELECT id FROM merkki WHERE nimi = '%s'", this.name)
-            );
+
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, name);
+
+            ResultSet result = preparedStatement.executeQuery();
 
             if (result.next())
                 id = result.getInt("id");
 
             result.close();
+            preparedStatement.close();
             connection.close();
-            query.close();
-        } catch (SQLException e) {
-            System.out.println(String.format("VIRHE: Automerkkiä %s ei ole olemassa.", this.name));
+        }
+        catch (SQLException e) {
+            System.out.println(String.format("Automerkkiä %s ei ole olemassa.", this.name));
         }
 
         return id;
     }
 
-    public String getName() { return name; }
+    public String getName() {
+        return name;
+    }
+
     public void setName(String name) {
         this.name = name;
     }

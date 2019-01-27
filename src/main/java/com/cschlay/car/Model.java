@@ -2,15 +2,13 @@ package com.cschlay.car;
 
 import com.cschlay.database.Connective;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import javax.xml.transform.Result;
+import java.sql.*;
 
 /**
  * Luokka automerkkien hallinointiin.
  */
-public class Model extends Connective {
+public class Model extends Connective implements Identifiable {
     private String name;
 
     /**
@@ -19,23 +17,25 @@ public class Model extends Connective {
      * @return automerkin id -tunnus
      */
     public int getId() {
+        String sql = "SELECT id FROM malli WHERE nimi = ?";
         int id = -1;
 
         try {
             Connection connection = connector.connect();
-            Statement query = connection.createStatement();
-            ResultSet result = query.executeQuery(
-                    String.format("SELECT id FROM malli WHERE nimi = '%s'", this.name)
-            );
+
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, name);
+
+            ResultSet result = preparedStatement.executeQuery();
 
             if (result.next())
                 id = result.getInt("id");
 
             result.close();
+            preparedStatement.close();
             connection.close();
-            query.close();
         } catch (SQLException e) {
-            System.out.println(String.format("VIRHE: Mallia %s ei ole olemassa.", this.name));
+            System.out.println(String.format("Mallia %s ei ole olemassa.", this.name));
         }
 
         return id;

@@ -5,7 +5,7 @@ import com.cschlay.database.Connective;
 /**
  * Moottorille ei ole toteutettu tuotekoodia merkkijonona, joten käytämme kuvitteellista id -tunnusta.
  */
-public class Engine extends Connective {
+public class Engine extends Connective implements Identifiable {
     private int id;
     private int power;
     private int displacement;   // https://en.wikipedia.org/wiki/Engine_displacement

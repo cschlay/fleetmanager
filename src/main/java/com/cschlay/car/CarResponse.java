@@ -3,6 +3,9 @@ package com.cschlay.car;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+/**
+ * Ilmoitus, joka palautetaan autoon liittyvissä viesteissä.
+ */
 public class CarResponse {
     private String message;
     private boolean success;
