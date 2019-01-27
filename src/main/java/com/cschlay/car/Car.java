@@ -47,26 +47,10 @@ public class Car extends Connective implements Identifiable {
             preparedStatement.executeUpdate();
             preparedStatement.close();
 
-            // Haetaan auton id.
+            // Tallennetaan moottorin tiedot ja katsastus.
             int id = getId();
-
-            // Tallennetaan moottorin tiedot.
-            sql = "INSERT INTO moottori (auto, koko, teho) VALUES (?, ?, ?)";
-            preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setInt(1, id);
-            preparedStatement.setInt(2, engine.getDisplacement());
-            preparedStatement.setInt(3, engine.getPower());
-            preparedStatement.executeUpdate();
-            preparedStatement.close();
-
-            // Lisää katsastus
-            sql = "INSERT INTO katsastus (auto, pvm) VALUES (?, ?)";
-            preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setInt(1, id);
-            preparedStatement.setDate(2, inspectionDate);
-            preparedStatement.executeUpdate();
-            preparedStatement.close();
-            connection.close();
+            addEngine(id);
+            addInspection(id);
 
             response.setMessage(String.format("Auto %s lisättiin tietokantaan.", registry));
             response.setSuccess(true);
@@ -77,6 +61,47 @@ public class Car extends Connective implements Identifiable {
         }
 
         return response;
+    }
+
+    // Lisää moottorin tiedot tietokantaan.
+    private void addEngine(int id) {
+        String sql = "INSERT INTO moottori (auto, koko, teho) VALUES (?, ?, ?)";
+
+        try {
+            Connection connection = connector.connect();
+
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, id);
+            preparedStatement.setInt(2, engine.getDisplacement());
+            preparedStatement.setInt(3, engine.getPower());
+            preparedStatement.executeUpdate();
+
+            preparedStatement.close();
+            connection.close();
+        }
+        catch (SQLException e) {
+            System.out.println("Moottorin tietoja ei voitu lisätä.");
+        }
+    }
+
+    // Lisää katsastuksen tietokantaan.
+    private void addInspection(int id) {
+        String sql = "INSERT INTO katsastus (auto, pvm) VALUES (?, ?)";
+
+        try {
+            Connection connection = connector.connect();
+
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, id);
+            preparedStatement.setDate(2, inspectionDate);
+            preparedStatement.executeUpdate();
+
+            preparedStatement.close();
+            connection.close();
+        }
+        catch (SQLException e) {
+            System.out.println("Katsastusta ei voitu lisätä.");
+        }
     }
 
     /**
@@ -128,31 +153,28 @@ public class Car extends Connective implements Identifiable {
      * @return totuusarvo onnistuiko muokkaus.
      */
     public CarResponse modify() {
+        String sql = "UPDATE auto SET malli = ?, merkki = ?, vuosimalli = ? WHERE rekisterinumero = ?";
         CarResponse response = new CarResponse();
 
         try {
             Connection connection = connector.connect();
 
             // Muutetaan auton tietoja.
-            String sql = "UPDATE auto SET malli = ?, merkki = ?, vuosimalli = ? WHERE rekisterinumero = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, model.getId());
             preparedStatement.setInt(2, brand.getId());
             preparedStatement.setInt(3, year);
             preparedStatement.setString(4, registry);
             preparedStatement.executeUpdate();
-            preparedStatement.close();
 
-            // Muutetaan moottorin tietoja.
-            sql = "UPDATE moottori SET koko = ?, teho = ? WHERE auto = ?";
-            preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setInt(1, engine.getDisplacement());
-            preparedStatement.setInt(2, engine.getPower());
-            preparedStatement.setInt(3, getId());
-            preparedStatement.executeUpdate();
             preparedStatement.close();
-
             connection.close();
+
+            // Muutetaan moottorin tietoja ja katsastuksen tietoja.
+            int id = getId();
+            modifyEngine(id);
+            modifyInspectionDate(id);
+
             response.setMessage(String.format("Auton %s tietoja muokattiin.", registry));
             response.setSuccess(true);
         }
@@ -162,6 +184,47 @@ public class Car extends Connective implements Identifiable {
         }
 
         return response;
+    }
+
+    // Muokkaa moottorin tietoja.
+    private void modifyEngine(int id) {
+        String sql = "UPDATE moottori SET koko = ?, teho = ? WHERE auto = ?";
+
+        try {
+            Connection connection = connector.connect();
+
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, engine.getDisplacement());
+            preparedStatement.setInt(2, engine.getPower());
+            preparedStatement.setInt(3, id);
+            preparedStatement.executeUpdate();
+
+            preparedStatement.close();
+            connection.close();
+        }
+        catch (SQLException e) {
+            System.out.println("Moottorin tietoja ei voitu muokata.");
+        }
+    }
+
+    // Muokkaa katsauspäiväärää
+    private void modifyInspectionDate(int id) {
+        String sql = "UPDATE moottori SET pvm = ? WHERE auto = ?";
+
+        try {
+            Connection connection = connector.connect();
+
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setDate(1, inspectionDate);
+            preparedStatement.setInt(2, id);
+            preparedStatement.executeUpdate();
+
+            preparedStatement.close();
+            connection.close();
+        }
+        catch (SQLException e) {
+            System.out.println("Katsauspäivämäärää ei voitu muuttaa.");
+        }
     }
 
     public int getBrand() {
