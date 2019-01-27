@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.SQLException;
 import java.util.List;
 
 @RequestMapping("/fleet/car")
@@ -80,7 +79,7 @@ public class CarController {
         }
         catch (CarNotFoundException e) {
             e.printStackTrace();
-            return new ResponseEntity<>("Autoa ei löydetty tietokannasta.",HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Autoa ei löydetty tietokannasta.", HttpStatus.BAD_REQUEST);
         }
     }
 

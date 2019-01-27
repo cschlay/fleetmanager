@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS moottori (
     koko INTEGER,
     teho INTEGER,
     PRIMARY KEY (id),
-    FOREIGN KEY (auto) REFERENCES auto(id)
+    FOREIGN KEY (auto) REFERENCES auto(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS katsastus (
@@ -42,25 +42,25 @@ CREATE TABLE IF NOT EXISTS katsastus (
     auto INTEGER NOT NULL,
     pvm DATE NOT NULL,
     PRIMARY KEY (id),
-    FOREIGN KEY (auto) REFERENCES auto(id)
+    FOREIGN KEY (auto) REFERENCES auto(id) ON DELETE CASCADE
 );
 
-INSERT INTO merkki VALUES (1, 'Clay');
-INSERT INTO merkki VALUES (2, 'Alcy');
-INSERT INTO merkki VALUES (3, 'Yalc');
+INSERT INTO merkki (nimi) VALUES ('Clay');
+INSERT INTO merkki (nimi) VALUES ('Alcy');
+INSERT INTO merkki (nimi) VALUES ('Yalc');
 
-INSERT INTO malli VALUES (1, 1, 'X1');
-INSERT INTO malli VALUES (2, 2, 'Y2');
+INSERT INTO malli (merkki, nimi) VALUES (1, 'X1');
+INSERT INTO malli (merkki, nimi) VALUES (2, 'Y2');
 
-INSERT INTO auto VALUES (1, 1, 1, 'TESTI-AXM-103', 1997);
-INSERT INTO auto VALUES (2, 1, 3, 'TESTI-QLW-951', 2015);
+INSERT INTO auto (malli, merkki, rekisterinumero, vuosimalli) VALUES (1, 1, 'TESTI-AXM-103', 1997);
+INSERT INTO auto (malli, merkki, rekisterinumero, vuosimalli) VALUES (1, 3, 'TESTI-QLW-951', 2015);
 
-INSERT INTO moottori VALUES (1, 1, 1500, 13);
-INSERT INTO moottori VALUES (2, 2, 1800, 15);
+INSERT INTO moottori (auto, koko, teho) VALUES (1, 1500, 13);
+INSERT INTO moottori (auto, koko, teho) VALUES (2, 1800, 15);
 
-INSERT INTO katsastus VALUES (1, 1, '2001-10-1');
-INSERT INTO katsastus VALUES (2, 1, '2002-12-3');
-INSERT INTO katsastus VALUES (3, 2, '2019-01-10');
+INSERT INTO katsastus (auto, pvm) VALUES (1, '2001-10-1');
+INSERT INTO katsastus (auto, pvm) VALUES (1, '2002-12-3');
+INSERT INTO katsastus (auto, pvm) VALUES (2, '2019-01-10');
 
 GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public to cschlay;
 GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO cschlay;
