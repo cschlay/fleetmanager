@@ -3,10 +3,7 @@ package com.cschlay.car;
 import com.cschlay.car.search.CarNotFoundException;
 import com.cschlay.database.Connective;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 /**
  * Luokka esittää autoa, sisältää tiedot autosta.
@@ -15,6 +12,7 @@ public class Car extends Connective implements Identifiable {
     private Brand brand;
     private Engine engine;
     private Model model;
+    private Date inspectionDate;
     private String registry;
     private int year;
 
@@ -58,6 +56,14 @@ public class Car extends Connective implements Identifiable {
             preparedStatement.setInt(1, id);
             preparedStatement.setInt(2, engine.getDisplacement());
             preparedStatement.setInt(3, engine.getPower());
+            preparedStatement.executeUpdate();
+            preparedStatement.close();
+
+            // Lisää katsastus
+            sql = "INSERT INTO katsastus (auto, pvm) VALUES (?, ?)";
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, id);
+            preparedStatement.setDate(2, inspectionDate);
             preparedStatement.executeUpdate();
             preparedStatement.close();
             connection.close();
@@ -205,6 +211,17 @@ public class Car extends Connective implements Identifiable {
         }
 
         return id;
+    }
+
+    public Date getInspectionDate() {
+        return inspectionDate;
+    }
+
+    public void setInspectionDate(Date date) {
+        inspectionDate = date;
+    }
+    public void setInspectionDate(String date) {
+        inspectionDate = Date.valueOf(date);
     }
 
     public int getModel() {

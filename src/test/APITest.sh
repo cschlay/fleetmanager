@@ -2,12 +2,12 @@
 
 echo "== AUTOJEN LISÄÄMINEN  =="
 
-echo "Lisätään {"registry": "AUTO-1", "brand": "Clay", "model": "X1", "year": 2010, "power": 30, "displacement": 1861}."
-curl -H 'Content-Type: Application/Json' -d '{"registry": "AUTO-1", "brand": "Clay", "model": "X1", "year": 2010, "power": 30, "displacement": 1861}' localhost:8080/fleet/car/add
+echo "Lisätään {"registry": "AUTO-1", "brand": "Clay", "model": "X1", "year": 2010, "power": 30, "displacement": 1861, "inspectionDate": "2020-01-20"}."
+curl -H 'Content-Type: Application/Json' -d '{"registry": "AUTO-1", "brand": "Clay", "model": "X1", "year": 2010, "power": 30, "displacement": 1861, "inspectionDate": "2020-01-20"}' localhost:8080/fleet/car/add
 echo ""
 
-echo "Lisätään {"registry": "AUTO-2", "brand": "Clay", "model": "X1", "year": 2010, "power": 30, "displacement": 1723}."
-curl -H 'Content-Type: Application/Json' -d '{"registry": "AUTO-2", "brand": "Clay", "model": "X1", "year": 2010, "power": 30, "displacement": 1723}' localhost:8080/fleet/car/add
+echo "Lisätään {"registry": "AUTO-2", "brand": "Clay", "model": "X1", "year": 2010, "power": 30, "displacement": 1723, "inspectionDate": "2021-05-23"}."
+curl -H 'Content-Type: Application/Json' -d '{"registry": "AUTO-2", "brand": "Clay", "model": "X1", "year": 2010, "power": 30, "displacement": 1723, "inspectionDate": "2021-05-23"}' localhost:8080/fleet/car/add
 echo ""
 
 echo "Seuraavaksi pitäisi tulla ilmoitus, että lisäys ei onnistu."

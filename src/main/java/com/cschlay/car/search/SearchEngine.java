@@ -133,6 +133,9 @@ public class SearchEngine extends Connective {
                 // Haetaan moottorin tiedot.
                 getEngineInfo(car);
 
+                // Haetaan seuraava katsastus.
+                getInspectionInfo(car);
+
                 return car;
             }
             // Heitetään virhe, jos autoa ei löydy.
@@ -175,6 +178,34 @@ public class SearchEngine extends Connective {
         }
         catch (SQLException e) {
             System.out.println("Moottorin tiedoissa on vikaa.");
+        }
+    }
+
+    /**
+     * Hakee katsastuspäivämäärän.
+     *
+     * @param car auto oliona
+     */
+    public void getInspectionInfo(Car car) {
+        String sql = "SELECT pvm FROM katsastus WHERE auto = ?";
+
+        try {
+            Connection connection = connector.connect();
+
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, car.getId());
+
+            ResultSet result = preparedStatement.executeQuery();
+
+            if (result.next())
+                car.setInspectionDate(result.getDate("pvm"));
+
+            result.close();
+            preparedStatement.close();
+            connection.close();
+        }
+        catch (SQLException e) {
+            System.out.println("Katsastuspäivämäärää ei löytynyt.");
         }
     }
 

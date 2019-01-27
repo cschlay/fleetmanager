@@ -2,7 +2,6 @@ package com.cschlay.car;
 
 import com.cschlay.database.Connective;
 
-import javax.xml.transform.Result;
 import java.sql.*;
 
 /**
