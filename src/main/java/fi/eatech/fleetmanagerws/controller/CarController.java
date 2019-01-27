@@ -2,9 +2,12 @@ package fi.eatech.fleetmanagerws.controller;
 
 import com.cschlay.car.Car;
 import com.cschlay.car.CarResponse;
+import com.cschlay.car.search.SearchEngine;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequestMapping("/fleet/car")
 @RestController
@@ -75,6 +78,18 @@ public class CarController {
     }
 
     /**
+     * Listaa tietokannassa sisältäviä autoja.
+     * Oletetaan, että kaikki rajaustoiminnon tiedot ovat käytössä.
+     *
+     * @param search rajaustoiminnot
+     * @return lista autoista
+     */
+    @PostMapping("/listing")
+    public @ResponseBody List<Car> carListing(@RequestBody SearchEngine search) {
+        return search.carListing();
+    }
+
+    /**
      * Hakee yksittäisen auton tietoja rekisterinumeron perusteella.
      *
      * @param registry auton rekisterinumero
@@ -84,4 +99,6 @@ public class CarController {
     public @ResponseBody Car findCar(@RequestParam String registry) {
         return new Car(registry);
     }
+
+
 }
