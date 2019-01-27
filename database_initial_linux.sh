@@ -48,19 +48,30 @@ CREATE TABLE IF NOT EXISTS katsastus (
 INSERT INTO merkki (nimi) VALUES ('Clay');
 INSERT INTO merkki (nimi) VALUES ('Alcy');
 INSERT INTO merkki (nimi) VALUES ('Yalc');
+INSERT INTO merkki (nimi) VALUES ('Caly');
+
 
 INSERT INTO malli (merkki, nimi) VALUES (1, 'X1');
-INSERT INTO malli (merkki, nimi) VALUES (2, 'Y2');
+INSERT INTO malli (merkki, nimi) VALUES (1, 'X2');
+INSERT INTO malli (merkki, nimi) VALUES (2, 'Y1');
+INSERT INTO malli (merkki, nimi) VALUES (3, 'S');
+INSERT INTO malli (merkki, nimi) VALUES (4, 'L');
 
-INSERT INTO auto (malli, merkki, rekisterinumero, vuosimalli) VALUES (1, 1, 'TESTI-AXM-103', 1997);
-INSERT INTO auto (malli, merkki, rekisterinumero, vuosimalli) VALUES (1, 3, 'TESTI-QLW-951', 2015);
+INSERT INTO auto (malli, merkki, rekisterinumero, vuosimalli) VALUES (1, 1, 'TESTI-1', 1997);
+INSERT INTO auto (malli, merkki, rekisterinumero, vuosimalli) VALUES (2, 2, 'TESTI-2', 2006);
+INSERT INTO auto (malli, merkki, rekisterinumero, vuosimalli) VALUES (3, 3, 'TESTI-3', 2015);
+INSERT INTO auto (malli, merkki, rekisterinumero, vuosimalli) VALUES (4, 4, 'TESTI-4', 2019);
 
 INSERT INTO moottori (auto, koko, teho) VALUES (1, 1500, 13);
-INSERT INTO moottori (auto, koko, teho) VALUES (2, 1800, 15);
+INSERT INTO moottori (auto, koko, teho) VALUES (2, 1700, 20);
+INSERT INTO moottori (auto, koko, teho) VALUES (3, 1400, 15);
+INSERT INTO moottori (auto, koko, teho) VALUES (4, 1800, 12);
 
-INSERT INTO katsastus (auto, pvm) VALUES (1, '2001-10-1');
-INSERT INTO katsastus (auto, pvm) VALUES (1, '2002-12-3');
-INSERT INTO katsastus (auto, pvm) VALUES (2, '2019-01-10');
+
+INSERT INTO katsastus (auto, pvm) VALUES (1, '2023-10-01');
+INSERT INTO katsastus (auto, pvm) VALUES (2, '2022-12-03');
+INSERT INTO katsastus (auto, pvm) VALUES (3, '2021-10-05');
+INSERT INTO katsastus (auto, pvm) VALUES (4, '2020-12-03');
 
 GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public to cschlay;
 GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO cschlay;
