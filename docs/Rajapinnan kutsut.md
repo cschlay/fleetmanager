@@ -22,3 +22,27 @@ Ainoastaan rekisterinumero on pakollinen ja jokin muokattava ominaisuus.
 ```
 curl -X PUT -H 'Content-Type: Application/Json' -d '{"registry": "TESTI-AUTO", "vuosimalli": 1980}' localhost:8080/fleet/car/modify
 ```
+
+## Auton poistaminen
+Auto poistetaan rekisterinumeron perusteella eli osoitteen loppuosaan rekisterinumero.
+Pitäisi myös automaattisesti poistaa moottorin tiedot ja katsauspäivämäärän, ne ovat eri taulussa.
+
+**Esimerkki**
+```
+curl -X DELETE localhost:8080/fleet/car/delete?registry=TESTI-AUTO
+```
+
+## Tietojen hakeminen
+Haetaan auton rekisterinumeron perusteella vastaava kuin auton poistamisessa.
+
+**Esimerkki**
+```
+curl localhost:8080/fleet/car/search?registry=TESTI-AUTO
+```
+
+## Autolistaus
+Autolistauksen haku toimii siten, että argumenttina annetaan json, joka sisältää jonkin rajoituksista.
+
+```
+curl -H 'Content-Type: Application/Json' -d '{"minYear": 1900, "maxYear": 2019, "model": "X1"}' localhost:8080/fleet/car/listing
+```

@@ -82,17 +82,42 @@ public class SearchEngine extends Connective {
      */
     public List<Car> carListing() {
         List<Car> list = new Vector<>();
+        String sql = "SELECT rekisterinumero FROM auto WHERE ";
 
-        String sql = "SELECT rekisterinumero FROM auto WHERE malli = ? AND merkki = ? AND vuosimalli >= ? AND vuosimalli <= ?";
+        boolean hasMinYear = minYear != 0;
+        boolean hasMaxYear = maxYear != 0;
+        boolean hasBrand = brand.getName() != null;
+        boolean hasModel = model.getName() != null;
+
+        // Rajoituksien lisäämistä.
+        sql += (hasMinYear ? "vuosimalli >= ? " : "vuosimalli >= 1900 ");
+        sql += (hasMaxYear ? "AND vuosimalli <= ? " : "AND vuosimalli <= 2100 ");
+
+        if (hasBrand)
+            sql += "AND merkki = ? ";
+
+        if (hasModel)
+            sql += "AND malli = ?";
+
+        System.out.println(sql);
 
         try {
             Connection connection = connector.connect();
 
+            int i = 1;
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setInt(1, brand.getId());
-            preparedStatement.setInt(2, model.getId());
-            preparedStatement.setInt(3, minYear);
-            preparedStatement.setInt(4, maxYear);
+
+            if (hasMinYear)
+                preparedStatement.setInt(i++, minYear);
+
+            if (hasMaxYear)
+                preparedStatement.setInt(i++, maxYear);
+
+            if (hasBrand)
+                preparedStatement.setInt(i++, brand.getId());
+
+            if (hasModel)
+                preparedStatement.setInt(i, model.getId());
 
             ResultSet result = preparedStatement.executeQuery();
             while (result.next()) {
@@ -110,9 +135,7 @@ public class SearchEngine extends Connective {
             preparedStatement.close();
             connection.close();
         }
-        catch (SQLException e) {
-            e.printStackTrace();
-        }
+        catch (SQLException e) { e.printStackTrace(); }
 
         return list;
     }
