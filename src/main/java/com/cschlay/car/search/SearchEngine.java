@@ -52,7 +52,6 @@ public class SearchEngine extends Connective {
             if (result.next()) {
                 car.setBrand(result.getString("merkki"));
                 car.setModel(result.getString("malli"));
-                car.setEngine(result.getInt("moottori"));
                 car.setYear(result.getInt("vuosimalli"));
                 car.setRegistry(registry);
 

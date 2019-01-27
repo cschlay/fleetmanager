@@ -15,25 +15,21 @@ public class CarController {
 
     /**
      * Lisää auton tietokantaan.
-     * Jsonin pitää olla esimerkiksi seuraavanlainen (tiedot täytyy olla).
      *
-     * {"brand": "Clay", "engine": 1, "model": "X1", "registry": "TESTI-AUTO", "year": 1980}
+     * Esimerkki sallitusta json -argumentista.
+     * {"registry": "TESTI-AUTO", "brand": "Clay", "model": "X1", "year": 2019, "power": 30, "displacement": 1800}'
      *
      * @param car auton tiedot annetaan json-muodossa
      * @return ilmoitus siitä onnistuiko lisäys
      */
     @PostMapping("/add")
     public ResponseEntity<String > addCar(@RequestBody Car car) {
-        String message;
+        CarResponse response = car.add();
 
-        if (car.store()) {
-            message = String.format("Auto %s lisättiin tietokantaan.\n", car.getRegistry());
-            return new ResponseEntity<>(message, HttpStatus.CREATED);
-        }
-        else {
-            message = String.format("Autoa %s ei voitu lisätä.\n", car.getRegistry());
-            return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
-        }
+        if (response.getSuccess())
+            return response.getResponse(HttpStatus.CREATED);
+        else
+            return response.getResponse(HttpStatus.BAD_REQUEST);
     }
 
     /**

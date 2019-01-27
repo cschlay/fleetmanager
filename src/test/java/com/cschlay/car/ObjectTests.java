@@ -22,10 +22,9 @@ public class ObjectTests {
         Car car = new Car();
         car.setModel("X1");
         car.setBrand("Clay");
-        car.setEngine(2);
         car.setRegistry("TESTI-OK");
         car.setYear(2010);
 
-        car.store();
+        car.add();
     }
 }
