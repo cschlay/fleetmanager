@@ -38,6 +38,9 @@ Heikolla autotietoudella oletin, että moottorin koko on englanniksi "displaceme
 
 ## Rajapinnan kutsut
 
+Esimerkkejä löytyy tiedostosta *src/test/APITest.sh*, jolla olen itse testannut.
+Myös *test/java/com/cschlay/car/ObjectTests* testaa, joitakin toimintoja.
+
 ### Auton lisääminen
 Auton tiedot annetaan json -muodossa.
 POST -metodin yleinen muoto on siis
