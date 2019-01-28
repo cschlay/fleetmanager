@@ -17,6 +17,7 @@ echo ""
 echo "== AUTOLISTAUS =="
 echo "Haetaan listaus autoista rajauksella: {"minYear": 1900, "maxYear": 2019, "brand": "Clay", "model": "X1"}."
 echo "Tuloksena pitäisi olla lista, jossa on useita autoja ihmiselle vaikeasti luettavana listana."
+echo ""
 curl -H 'Content-Type: Application/Json' -d '{"minYear": 1900, "maxYear": 2019, "brand": "Clay", "model": "X1"}' localhost:8080/fleet/car/listing
 echo ""
 echo ""
