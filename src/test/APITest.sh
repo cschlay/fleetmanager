@@ -42,6 +42,12 @@ echo ""
 echo "Tarkistetaan onko auton tieto muuttunut."
 curl localhost:8080/fleet/car/search?registry=AUTO-1
 echo ""
+echo "Vaihdetaan nyt vuosimalli"
+curl -X PUT -H 'Content-Type: Application/Json' -d '{"registry": "AUTO-1", "year": "1997"}' localhost:8080/fleet/car/modify
+echo ""
+echo "Tarkistetaan onko auton tieto muuttunut."
+curl localhost:8080/fleet/car/search?registry=AUTO-1
+echo ""
 echo ""
 echo "Seuraavaa autoa ei voi muokata."
 curl -X PUT -H 'Content-Type: Application/Json' -d '{"registry": "AUTO-EI", "brand": "Alcy"}' localhost:8080/fleet/car/modify

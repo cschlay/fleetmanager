@@ -10,7 +10,6 @@ public class CarResponse {
     private String message;
     private boolean success;
 
-
     public ResponseEntity<String> getResponse(HttpStatus statusCode) {
         return new ResponseEntity<>(message + '\n', statusCode);
     }

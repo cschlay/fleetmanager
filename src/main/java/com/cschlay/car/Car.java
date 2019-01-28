@@ -49,7 +49,7 @@ public class Car extends Connective implements Identifiable {
 
             // Tallennetaan moottorin tiedot ja katsastus.
             int id = getId();
-            addEngine(id);
+            engine.add(id);
             addInspection(id);
 
             response.setMessage(String.format("Auto %s lisättiin tietokantaan.", registry));
@@ -61,27 +61,6 @@ public class Car extends Connective implements Identifiable {
         }
 
         return response;
-    }
-
-    // Lisää moottorin tiedot tietokantaan.
-    private void addEngine(int id) {
-        String sql = "INSERT INTO moottori (auto, koko, teho) VALUES (?, ?, ?)";
-
-        try {
-            Connection connection = connector.connect();
-
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setInt(1, id);
-            preparedStatement.setInt(2, engine.getDisplacement());
-            preparedStatement.setInt(3, engine.getPower());
-            preparedStatement.executeUpdate();
-
-            preparedStatement.close();
-            connection.close();
-        }
-        catch (SQLException e) {
-            System.out.println("Moottorin tietoja ei voitu lisätä.");
-        }
     }
 
     // Lisää katsastuksen tietokantaan.
@@ -172,7 +151,7 @@ public class Car extends Connective implements Identifiable {
 
             // Muutetaan moottorin tietoja ja katsastuksen tietoja.
             int id = getId();
-            modifyEngine(id);
+            engine.modify(id);
             modifyInspectionDate(id);
 
             response.setMessage(String.format("Auton %s tietoja muokattiin.", registry));
@@ -184,27 +163,6 @@ public class Car extends Connective implements Identifiable {
         }
 
         return response;
-    }
-
-    // Muokkaa moottorin tietoja.
-    private void modifyEngine(int id) {
-        String sql = "UPDATE moottori SET koko = ?, teho = ? WHERE auto = ?";
-
-        try {
-            Connection connection = connector.connect();
-
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setInt(1, engine.getDisplacement());
-            preparedStatement.setInt(2, engine.getPower());
-            preparedStatement.setInt(3, id);
-            preparedStatement.executeUpdate();
-
-            preparedStatement.close();
-            connection.close();
-        }
-        catch (SQLException e) {
-            System.out.println("Moottorin tietoja ei voitu muokata.");
-        }
     }
 
     // Muokkaa katsauspäiväärää
@@ -295,16 +253,16 @@ public class Car extends Connective implements Identifiable {
         model.setName(name);
     }
 
+    public String getModelName() {
+        return model.getName();
+    }
+
     public int getPower() {
         return engine.getPower();
     }
 
     public void setPower(int value) {
         engine.setPower(value);
-    }
-
-    public String getModelName() {
-        return model.getName();
     }
 
     public String getRegistry() {

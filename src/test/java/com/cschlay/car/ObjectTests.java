@@ -3,18 +3,17 @@ package com.cschlay.car;
 import org.junit.Test;
 
 public class ObjectTests {
-    private final String[] testBrands = {"Clay", "Alcy", "Yalc", "Tesla"};
+    private final String[] BRANDS = {"Clay", "Alcy", "Yalc"};
+
 
     @Test
     public void brand() {
         Brand brand = new Brand();
 
-        for (String name : testBrands) {
+        for (String name : BRANDS) {
             brand.setName(name);
-            System.out.println(brand.getId());
+            assert(brand.getId() >= 0);
         }
-
-        System.out.println("Kaikkien paitsi viimeisen pitää olla suurempia kuin 0.");
     }
 
     @Test
@@ -25,6 +24,9 @@ public class ObjectTests {
         car.setRegistry("TESTI-OK");
         car.setYear(2010);
 
-        car.add();
+        CarResponse response = car.add();
+        assert(response.getSuccess());
+
+        car.delete();
     }
 }
